@@ -35,23 +35,11 @@ jobs:
         git config --global user.email "yswang.cn@gmail.com"
         git config --global user.name "even"
         git config pull.ff false
-    - name: Load master upstream commits and merge
-      run: |
-        git checkout master
-        git pull https://github.com/coolsnowwolf/luci.git master --log --no-commit
-        if [ -f ./.git/MERGE_MSG ]; then
-        mkdir ./tmp && cp ./.git/MERGE_MSG ./tmp/message
-        sed -i "1c [bot] AutoMerging: merge all upstream's changes:" ./tmp/message
-        sed -i '/^\#.*/d' ./tmp/message
-        git commit --file="./tmp/message"
-        else
-        echo "There is no merge commits."
-        fi
+    - name: Load upstream commits
+      run: git pull https://github.com/coolsnowwolf/luci.git --log --no-commit
 
-    - name: Load openwrt-23.05 upstream commits and merge
+    - name: Apply commit changes
       run: |
-        git checkout openwrt-23.05
-        git pull https://github.com/coolsnowwolf/luci.git openwrt-23.05 --log --no-commit
         if [ -f ./.git/MERGE_MSG ]; then
         mkdir ./tmp && cp ./.git/MERGE_MSG ./tmp/message
         sed -i "1c [bot] AutoMerging: merge all upstream's changes:" ./tmp/message
